@@ -20,10 +20,9 @@ function DiaryPage() {
     ) as HTMLTextAreaElement;
     setToLocalStorage("diary", textareaElement.value);
     axios
-      .post("/api/data", {
+      .post("/api/sentimentAndEmotion", {
         data: textareaElement.value,
-        finances: localStorage.getItem("finances")! || {},
-        tasks: localStorage.getItem("tasks")!,
+        finances: localStorage.getItem("finances")! || {data: [], weekly: [], yearly: []},
       })
       .then((response) => {
         appendToLocalStorage(
@@ -40,7 +39,7 @@ function DiaryPage() {
           response.data.response.fromCompose.fromAI
         );
         if (response.data.response.emotion_sentiment.sentiment == 0) {
-          toast("You are having a bad day!", {icon: "🥺"});
+          toast("You are having a bad day!", { icon: "🥺" });
           setInterval(() => {
             router.push("/assistant");
           }, 2000);
