@@ -6,20 +6,45 @@ import Header from "@/components/header";
 import axios from "axios";
 import { appendToLocalStorage, setToLocalStorage } from "@/lib/store";
 import { Toaster, toast } from "react-hot-toast";
-import FinanceMarker from "@/components/finance-marker";
-import TaskTracker from "@/components/task-marker";
+import FinanceMarker from "@/components/finance/finance-marker";
+import TaskTracker from "@/components/task/task-marker";
+import SeparatorLine from "@/components/seprator-line";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 function DiaryPage() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const router = useRouter();
+  const handleSubmit = () => {
     const textareaElement = document?.getElementById(
       "diary"
     ) as HTMLTextAreaElement;
     setToLocalStorage("diary", textareaElement.value);
     axios
-      .post("/api/data", { data: textareaElement.value })
+      .post("/api/data", {
+        data: textareaElement.value,
+        finances: localStorage.getItem("finances")! || {},
+        tasks: localStorage.getItem("tasks")!,
+      })
       .then((response) => {
-        appendToLocalStorage("data", response.data.response);
+        appendToLocalStorage(
+          "emotion_sentiment",
+          response.data.response.emotion_sentiment
+        );
+        console.log(response.data.response);
+        appendToLocalStorage(
+          "highlights",
+          response.data.response.fromCompose.highlights
+        );
+        appendToLocalStorage(
+          "fromAI",
+          response.data.response.fromCompose.fromAI
+        );
+        if (response.data.response.emotion_sentiment.sentiment == 0) {
+          toast("You are having a bad day!", {icon: "🥺"});
+          setInterval(() => {
+            router.push("/assistant");
+          }, 2000);
+        }
         toast.success("Diary saved successfully!");
       })
       .catch((error) => {
@@ -31,28 +56,36 @@ function DiaryPage() {
       <Toaster />
       <Header route="Diary" message="Do't forget to write your diary" />
       <div className="flex flex-row w-full h-full place-content-evenly">
-        <div className="w-full gap-2.5 h-screen flex flex-col">
-          <form
-            onSubmit={handleSubmit}
-            className="w-full h-[85%] flex flex-col gap-1.5"
+        <div className="w-[90%] gap-2.5 h-[85vh] flex flex-col">
+          <Button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mx-auto cursor-pointer"
+            onClick={() => {
+              handleSubmit();
+            }}
+            type="submit"
           >
+            I&apos;m done with my diary
+          </Button>
+          <p className="text-center text-sm text-muted-foreground">
+            First done with your finances and tasks
+          </p>
+          <div className="w-full h-full flex flex-col gap-1.5">
             <Label htmlFor="message" className="mx-auto text-2xl font-sans">
               Tell me about your day today
             </Label>
-            <hr className="w-2/3 mx-auto m-1.5 h-0.5 bg-gray-400"></hr>
+            <SeparatorLine />
             <Textarea
               id="diary"
               placeholder="write your diary here"
               className="w-full p-5 h-full focus:outline-none"
             />
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mx-auto cursor-pointer">
-              I&apos;m complete with my diary
-            </button>
-          </form>
+          </div>
         </div>
       </div>
-            <FinanceMarker />
-            <TaskTracker />
+      <div className="w-[90%] mx-auto  h-full">
+        <FinanceMarker />
+        <TaskTracker />
+      </div>
     </>
   );
 }

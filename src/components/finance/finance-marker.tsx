@@ -12,36 +12,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
+import { getFromLocalStorage, setToLocalStorage } from "@/lib/store";
 
-type Data = {
-  title: string;
-  isInvestmentOExpense: boolean;
-  amount: number;
+// Finance data structure
+type FinanceData = {
+  [key: string]: [number, number];
 };
 
 // Sample data
-const financeData: Data[] = [
-  {
-    title: "Invoice #1",
-    isInvestmentOExpense: true,
-    amount: 123.45,
-  },
-  {
-    title: "Invoice #2",
-    isInvestmentOExpense: false,
-    amount: 67.89,
-  },
-  {
-    title: "Invoice #3",
-    isInvestmentOExpense: true,
-    amount: 90.12,
-  },
-  {
-    title: "Invoice #4",
-    isInvestmentOExpense: false,
-    amount: 45.67,
-  },
-];
+const financeData: FinanceData = getFromLocalStorage<FinanceData>("finances") || {};
+// const financeData: FinanceData = {
+//   "Invoice #1": [1, 123.45], // Investment, positive amount
+//   "Invoice #2": [0, 67.89], // Expense, positive amount
+//   "Invoice #3": [1, 90.12], // Investment, positive amount
+//   "Invoice #4": [0, 45.67], // Expense, positive amount
+// };
 
 function FinanceMarker() {
   const [newTitle, setNewTitle] = useState<string>("");
@@ -50,13 +35,27 @@ function FinanceMarker() {
 
   // Function to add new finance entry
   const handleAddEntry = () => {
-    if (newTitle && newAmount > 0) {
-      const newData: Data = {
-        title: newTitle,
-        isInvestmentOExpense: isInvestment,
-        amount: newAmount,
-      };
-      financeData.push(newData); // Add to the current data (in a real app, you'd update the state or backend)
+    if (newTitle && newAmount !== 0) {
+      // Set the finance type (0 for expense, 1 for investment)
+      const financeType = isInvestment ? 1 : 0;
+
+      // Set the amount (positive for all types)
+      const adjustedAmount = Math.abs(newAmount);
+
+      // Add to finance data
+      financeData[newTitle] = [financeType, adjustedAmount];
+
+      // Log the finance data to console
+      console.log("Finance entry added:", {
+        [newTitle]: [financeType, adjustedAmount],
+      });
+      console.log(
+        "Current finance data:",
+        JSON.stringify({ finance: financeData }, null, 2)
+      );
+      setToLocalStorage("finances", financeData);
+
+      // Reset form
       setNewTitle("");
       setNewAmount(0);
       setIsInvestment(true);
@@ -65,11 +64,11 @@ function FinanceMarker() {
 
   return (
     <div className="flex flex-col text-zinc-50">
-      <h1 className="text-2xl font-bold font-mono mx-auto">Finance Marker</h1>
+      <h1 className="text-2xl font-bold font-mono mx-auto">Finance Tracker</h1>
       <hr className="w-2/3 mx-auto m-1.5 h-0.5 bg-gray-400"></hr>
       <div className="flex flex-col overflow-auto p-4">
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of your recent transactions.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Title</TableHead>
@@ -78,25 +77,29 @@ function FinanceMarker() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {financeData.map((invoice, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{invoice.title}</TableCell>
-                <TableCell>
-                  {invoice.isInvestmentOExpense ? "Investment" : "Expense"}
-                </TableCell>
-                <TableCell className="text-right">
-                  ₹{invoice.amount.toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
+            {Object.entries(financeData).map(
+              ([title, [type, amount]], index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{title}</TableCell>
+                  <TableCell>{type === 1 ? "Investment" : "Expense"}</TableCell>
+                  <TableCell
+                    className={`text-right ${
+                      type === 1 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    ₹{amount.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              )
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell colSpan={2}>Total</TableCell>
               <TableCell className="text-right">
                 ₹
-                {financeData
-                  .reduce((acc, curr) => acc + curr.amount, 0)
+                {Object.values(financeData)
+                  .reduce((acc, [_, amount]) => acc + amount, 0)
                   .toFixed(2)}
               </TableCell>
             </TableRow>
@@ -126,13 +129,16 @@ function FinanceMarker() {
             placeholder="Amount"
             className="bg-zinc-800 border-zinc-700"
           />
-          <Checkbox
-            id="is-investment"
-            checked={isInvestment}
-            title="Is Investment?"
-            className="size-8"
-            onCheckedChange={() => setIsInvestment(!isInvestment)}
-          />
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="is-investment"
+              checked={isInvestment}
+              title="Is Investment?"
+              className="size-8"
+              onCheckedChange={() => setIsInvestment(!isInvestment)}
+            />
+            <span className="text-sm">Investment</span>
+          </div>
           <Button
             onClick={handleAddEntry}
             className="bg-zinc-700 hover:bg-zinc-600 text-zinc-100"
@@ -146,3 +152,4 @@ function FinanceMarker() {
 }
 
 export default FinanceMarker;
+

@@ -21,7 +21,7 @@ import { getFromLocalStorage } from "@/lib/store";
 
 type Data = { day: string; emotion: number; sentiment: number };
 
-const chartData: Data[] = getFromLocalStorage("data")!;
+const chartData: Data[] = getFromLocalStorage("emotion_sentiment")!;
 
 const chartConfig = {
   Emotion: {

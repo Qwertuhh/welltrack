@@ -18,7 +18,6 @@ export const deleteFromLocalStorage = (key: string) => {
 };
 export const appendToLocalStorage = <T>(key: string, value: T) => {
   const existingItems = getFromLocalStorage<T[]>(key);
-  console.log("po",existingItems);
   if (existingItems) {
     const newItems = [...existingItems, value];
     setToLocalStorage(key, newItems);

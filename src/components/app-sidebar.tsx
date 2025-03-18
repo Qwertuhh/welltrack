@@ -7,7 +7,7 @@ import {
   NotebookPen,
   Calendar1Icon,
   ChartBarBig,
-  ArchiveRestore,
+  Flame,
   BotMessageSquare,
 } from "lucide-react";
 import Link from "next/link";
@@ -53,14 +53,14 @@ const data = {
           icon: <ChartBarBig />,
         },
         {
-          title: "Archive",
-          url: "#",
+          title: "Streaks",
+          url: "/streaks",
           isActive: false,
-          icon: <ArchiveRestore />,
+          icon: <Flame />,
         },
         {
           title: "Assistant",
-          url: "#",
+          url: "/assistant",
           isActive: false,
           icon: <BotMessageSquare />,
         },

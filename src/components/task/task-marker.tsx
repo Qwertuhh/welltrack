@@ -1,3 +1,4 @@
+'use client';
 import {
   Table,
   TableBody,
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useState, useEffect } from "react";
 import { getFromLocalStorage, setToLocalStorage } from "@/lib/store";
+import SeparatorLine from "@/components/seprator-line";
 
 // Task data structure
 type TaskData = {
@@ -25,20 +27,11 @@ type TaskData = {
   yearly: [number | string, string][];
 };
 
-// Sample data
-// const taskData: TaskData = {
-//   daily: [["2025-03-18T10:00", "Morning standup meeting"]],
-//   weekly: [
-//     [0, "Create project plan"],
-//     [1,  "Review code changes"],
-//     [5, "Team retrospective"],
-//   ],
-//   yearly: [
-//     [2, "Annual performance review"],
-//     [1,  "Budget planning"],
-//   ],
-// };
-const taskData: TaskData = getFromLocalStorage<TaskData>("tasks")!;
+const taskData: TaskData = getFromLocalStorage<TaskData>("tasks") || {
+  daily: [],
+  weekly: [],
+  yearly: [],
+};
 
 // Status descriptions
 const statusLabels: { [key: number]: string } = {
@@ -167,6 +160,7 @@ function TaskTracker() {
   return (
     <div className="flex flex-col h-screen bg-zinc-950 text-zinc-50">
       <h1 className="text-2xl font-bold font-mono mx-auto p-4">Task Tracker</h1>
+      <SeparatorLine />
       <div className="flex flex-col overflow-auto p-4">
         <div className="space-y-6">
           {/* Daily Tasks */}

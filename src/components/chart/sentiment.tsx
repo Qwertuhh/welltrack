@@ -26,7 +26,7 @@ type Data = {
   other: number;
 };
 
-const chartData: Data[] = getFromLocalStorage("data")!;
+const chartData: Data[] = getFromLocalStorage("emotion_sentiment")!;
 
 const chartConfig = {
   Sentiment: {
