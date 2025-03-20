@@ -12,4 +12,4 @@
 ### Demo Video
 You can watch the demo video here:
 
-[Watch the Demo Video](./present/present.mp4)
+[Watch the Demo Video](https://drive.google.com/file/d/1ORytUN1xckBs_HkBJVxsEvloAdZpnqmm/view?usp=drive_link)
