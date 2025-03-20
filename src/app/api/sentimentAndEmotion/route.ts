@@ -2,19 +2,23 @@ import { GoogleGenerativeAI, Schema, SchemaType } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
+// Allocate a pipeline for sentiment-analysis
+// [{'label': 'POSITIVE', 'score': 0.999817686}]
 export const dynamic = "force-static";
 type Data = {
   label: string;
   score: number;
 };
 const API_KEY = process.env.HUGGINGFACE_API_KEY;
-const model = "cardiffnlp/twitter-xlm-roberta-base-sentiment";
+const model = "cardiffnlp/twitter-roberta-base-sentiment-latest";
 
 async function POST(req: NextRequest) {
   try {
-    const { data, finances  } = await req.json();
+    const { data, finances } = await req.json();
+    
     const result = await axios.post(
-      "https://api-inference.huggingface.co/models/" + model,
+      // "https://api-inference.huggingface.co/models/" + model,
+      `https://router.huggingface.co/hf-inference/models/${model}`,
       { inputs: data },
       {
         headers: {
@@ -36,7 +40,6 @@ async function POST(req: NextRequest) {
       (a: Data, b: Data) => b.score - a.score
     )[0].label;
     //* Hightlights layer
-    //! can use without await also
     const fromCompose = JSON.parse(await ComposeData(data, finances));
 
     const response = {
@@ -47,7 +50,6 @@ async function POST(req: NextRequest) {
         sentiment: sentiment === "positive" || sentiment === "neutral" ? 1 : 0,
       },
     };
-    console.log(response);
     return NextResponse.json({
       response,
     });
