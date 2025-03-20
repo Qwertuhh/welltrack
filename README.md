@@ -6,5 +6,10 @@
 
 **AI Integration** plays a central role in enhancing the user experience and optimizing task management within the app.
 
-> [!NOTE] 
+> [!NOTE]  
 > While the app showcases the core functionality, it is **not production-ready**. Significant work remains to be done before it can be considered ready for deployment.
+
+### Demo Video
+You can watch the demo video here:
+
+[Watch the Demo Video](./present/present.mp4)
