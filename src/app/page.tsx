@@ -19,7 +19,7 @@ function Page() {
             plays a central role in enhancing the user experience and optimizing
             task management within the app.
           </p>
-          <p className="text-foreground font-light w-2xs text-sm border my-2 rounded p-1">
+          <p className="text-foreground w-fit text-sm border my-2 rounded p-1 font-medium">
             Its a Project developed for a hackathon pitch.{" "}
           </p>
           <Button

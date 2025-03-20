@@ -113,7 +113,7 @@ export default function ProfilePage({ className }: ProfilePageProps) {
                     Enter your avatar URL
                   </p>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full cursor-pointer">
                   Submit
                 </Button>
               </div>
