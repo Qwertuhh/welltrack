@@ -1,26 +1,67 @@
-'use client';
+"use client";
 import Chat from "@/components/assistant/chat";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getFromLocalStorage } from "@/lib/store";
+import axios from "axios";
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {  Volume2, VolumeX} from "lucide-react";
 
 function AssistantPage() {
   const [chatData, setChatData] = useState([
     [0, "Hello! How can I help you today?"],
   ]);
+  const [speak, setSpeak] = useState(false);
   const handelClick = () => {
     const message = document.getElementById("message") as HTMLInputElement;
-    setChatData([...chatData, [1, message.value]]);
+    const userDataLocal = `
+    Today's Diary: ${getFromLocalStorage("diary")},
+    Finances: ${getFromLocalStorage("finances")},
+    Tasks: ${getFromLocalStorage("tasks")},
+    EmotionAndSentiment: ${getFromLocalStorage("emotion_sentiment")},
+    `;
+
+    const updatedChatData = [...chatData, [1, `${message.value}`]];
+    setChatData(updatedChatData);
+    setChatData([...updatedChatData, [2, ""]]);
+    axios
+      .post("/api/assistant", {
+        userData: `UserData: ${userDataLocal},\n Issue Form User: ${message.value}`,
+      })
+      .then((response) => {
+        const newChatData = [...updatedChatData, [0, response.data.response]];
+        setChatData(newChatData.slice(0, -1));
+        setChatData(newChatData);
+        if(speak)speechSynthesis.speak(
+          new SpeechSynthesisUtterance(response.data.response)
+        ); // To speak
+
+        //* Clearing the input
+        message.value = "";
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
   };
   return (
     <>
       <Header message="Ask me anything" route="Assistant" />
-      <div className="w-full">
+      {/* Speak Toggle */}
+      <div className="flex items-center gap-2 border rounded-md p-2 absolute top-2 right-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => setSpeak(!speak)}
+        >
+          {speak ? <Volume2 /> : <VolumeX />}
+        </div>
+      </div>
+      <ScrollArea className="h-[72vh] rounded-md border p-4">
         {chatData.map((chat, key) => (
           <Chat key={key} chat={chat as [number, string]} />
         ))}
-      </div>
+      </ScrollArea>
       <div className="bottom-2 absolute w-[90%] mx-auto  text-white flex items-end justify-center">
         <div className="w-full max-w-xl px-4">
           <div className="flex flex-col items-center justify-center gap-4">

@@ -19,6 +19,7 @@ import {
 import { useState, useEffect } from "react";
 import { getFromLocalStorage, setToLocalStorage } from "@/lib/store";
 import SeparatorLine from "@/components/seprator-line";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 // Task data structure
 type TaskData = {
@@ -158,72 +159,74 @@ function TaskTracker() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 text-zinc-50">
+    <div className="flex flex-col h-full bg-zinc-950 text-zinc-50">
       <h1 className="text-2xl font-bold font-mono mx-auto p-4">Task Tracker</h1>
       <SeparatorLine />
-      <div className="flex flex-col overflow-auto p-4">
-        <div className="space-y-6">
-          {/* Daily Tasks */}
-          <div>
-            <h2 className="text-xl font-semibold font-mono mb-2">
-              Daily Tasks
-            </h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/3">Date & Time</TableHead>
-                  <TableHead>Task</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {taskData.daily.map((task, index) =>
-                  renderTaskRow(task, index, "daily")
-                )}
-              </TableBody>
-            </Table>
-          </div>
+      <ScrollArea>
+        <div className="flex flex-col p-4">
+          <div className="space-y-6">
+            {/* Daily Tasks */}
+            <div>
+              <h2 className="text-xl font-semibold font-mono mb-2">
+                Daily Tasks
+              </h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/3">Date & Time</TableHead>
+                    <TableHead>Task</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {taskData.daily.map((task, index) =>
+                    renderTaskRow(task, index, "daily")
+                  )}
+                </TableBody>
+              </Table>
+            </div>
 
-          {/* Weekly Tasks */}
-          <div>
-            <h2 className="text-xl font-semibold font-mono mb-2">
-              Weekly Tasks
-            </h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/4">Status</TableHead>
-                  <TableHead>Task</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {taskData.weekly.map((task, index) =>
-                  renderTaskRow(task, index, "weekly")
-                )}
-              </TableBody>
-            </Table>
-          </div>
+            {/* Weekly Tasks */}
+            <div>
+              <h2 className="text-xl font-semibold font-mono mb-2">
+                Weekly Tasks
+              </h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/4">Status</TableHead>
+                    <TableHead>Task</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {taskData.weekly.map((task, index) =>
+                    renderTaskRow(task, index, "weekly")
+                  )}
+                </TableBody>
+              </Table>
+            </div>
 
-          {/* Yearly Tasks */}
-          <div>
-            <h2 className="text-xl font-semibold font-mono mb-2">
-              Yearly Tasks
-            </h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/4">Status</TableHead>
-                  <TableHead>Task</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {taskData.yearly.map((task, index) =>
-                  renderTaskRow(task, index, "yearly")
-                )}
-              </TableBody>
-            </Table>
+            {/* Yearly Tasks */}
+            <div>
+              <h2 className="text-xl font-semibold font-mono mb-2">
+                Yearly Tasks
+              </h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/4">Status</TableHead>
+                    <TableHead>Task</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {taskData.yearly.map((task, index) =>
+                    renderTaskRow(task, index, "yearly")
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
 
       {/* Form to add new task */}
       <div className="flex flex-col p-6 bg-zinc-900 m-2 rounded-lg">

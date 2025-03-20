@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-
 import {
   Sidebar,
   SidebarContent,
@@ -25,53 +24,59 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import {usePathname} from'next/navigation';
-// This is sample data.
+import { usePathname } from "next/navigation";
+import ThemeToggle from "../theme/theme-toggle";
+import NavUser from "./nav-user";
+const iconOptions = "h-8 w-8 mr-2";
 const data = {
   navMain: [
     {
       title: "Home",
       url: "/",
-      icon: <Home />,
+      icon: <Home className="h-10 w-10"/>,
       items: [
         {
           title: "Diary",
-          url: "/diary",
+          url: "/dashboard/diary",
           isActive: false,
-          icon: <NotebookPen />,
+          icon: <NotebookPen className={iconOptions}/>,
         },
         {
           title: "Tasks",
-          url: "/tasks",
+          url: "/dashboard/tasks",
           isActive: false,
-          icon: <Calendar1Icon />,
+          icon: <Calendar1Icon className={iconOptions}/>,
         },
         {
           title: "Stats",
-          url: "/stats",
+          url: "/dashboard/stats",
           isActive: false,
-          icon: <ChartBarBig />,
+          icon: <ChartBarBig className={iconOptions}/>,
         },
         {
           title: "Streaks",
-          url: "/streaks",
+          url: "/dashboard/streaks",
           isActive: false,
-          icon: <Flame />,
+          icon: <Flame className={iconOptions}/>,
         },
         {
           title: "Assistant",
-          url: "/assistant",
+          url: "/dashboard/assistant",
           isActive: false,
-          icon: <BotMessageSquare />,
+          icon: <BotMessageSquare className={iconOptions}/>,
         },
       ],
     },
   ],
 };
-
+const userDetails = {
+  name: "John Doe",
+  email: "xv2yI@example.com",
+  avatar: "https://github.com/shadcn.png",
+};
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
-  console.log("Route",pathname);
+  console.log("Route", pathname);
   data.navMain.forEach((mainItem) => {
     mainItem.items.forEach((subItem) => {
       subItem.isActive = subItem.url === pathname;
@@ -136,7 +141,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <ThemeToggle />
+      <NavUser user={userDetails} />
     </Sidebar>
   );
 }
-

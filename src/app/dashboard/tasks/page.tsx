@@ -5,7 +5,9 @@ function TaskPage() {
   return (
     <>
       <Header message="To get tasks" route="Tasks" />
-      <TaskTracker />
+      <div className="h-screen">
+        <TaskTracker />
+      </div>
     </>
   );
 }

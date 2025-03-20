@@ -56,6 +56,12 @@
   --primary-foreground: oklch(0.985 0 0);
   --color-emotion: #47ffc2;
   --color-sentiment: #47ceff;
+  --color-investment: #47ceff;
+  --color-expenses: #47ffc2;
+  --color-daily: #272b77;
+  --color-weekly: #bbdd0f;
+  --color-yearly: #4ad843;
+  --color-schedule: #47ff91;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);

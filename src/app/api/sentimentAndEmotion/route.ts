@@ -10,7 +10,7 @@ type Data = {
 const API_KEY = process.env.HUGGINGFACE_API_KEY;
 const model = "cardiffnlp/twitter-xlm-roberta-base-sentiment";
 
-export async function POST(req: NextRequest) {
+async function POST(req: NextRequest) {
   try {
     const { data, finances  } = await req.json();
     const result = await axios.post(
@@ -122,3 +122,5 @@ async function ComposeData(data: string, finances: string) {
   const result = await model.generateContent(prompt);
   return result.response.text();
 }
+
+export { POST };

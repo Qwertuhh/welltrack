@@ -7,10 +7,10 @@ import axios from "axios";
 import { appendToLocalStorage, setToLocalStorage } from "@/lib/store";
 import { Toaster, toast } from "react-hot-toast";
 import FinanceMarker from "@/components/finance/finance-marker";
-import TaskTracker from "@/components/task/task-marker";
 import SeparatorLine from "@/components/seprator-line";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function DiaryPage() {
   const router = useRouter();
@@ -40,9 +40,10 @@ function DiaryPage() {
         );
         if (response.data.response.emotion_sentiment.sentiment == 0) {
           toast("You are having a bad day!", { icon: "🥺" });
-          setInterval(() => {
-            router.push("/assistant");
+          const routePromise =setInterval(() => {
+            router.push("/dashboard/assistant");
           }, 2000);
+          clearInterval(routePromise);
         }
         toast.success("Diary saved successfully!");
       })
@@ -83,8 +84,8 @@ function DiaryPage() {
       </div>
       <div className="w-[90%] mx-auto  h-full">
         <FinanceMarker />
-        <TaskTracker />
       </div>
+        <Link href="/dashboard/tasks" className="text-center text-accent-foreground bg-stone-800 underline hover:bg-zinc-600 py-2 px-4 rounded mx-auto">Fill your Tasks</Link>
     </>
   );
 }
