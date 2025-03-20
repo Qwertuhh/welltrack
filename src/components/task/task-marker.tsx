@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Table,
   TableBody,
@@ -23,10 +23,18 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 // Task data structure
 type TaskData = {
-  daily: [string, string][];
-  weekly: [number | string, string][];
-  yearly: [number | string, string][];
+  daily: Array<[string, string]>;
+  weekly: Array<[number, string] | [number, string, string]>;
+  yearly: Array<[number, string] | [number, string, string]>;
 };
+
+// Status labels type
+type StatusLabels = {
+  [key: number]: string;
+};
+
+// Task type
+type TaskType = "daily" | "weekly" | "yearly";
 
 const taskData: TaskData = getFromLocalStorage<TaskData>("tasks") || {
   daily: [],
@@ -35,7 +43,7 @@ const taskData: TaskData = getFromLocalStorage<TaskData>("tasks") || {
 };
 
 // Status descriptions
-const statusLabels: { [key: number]: string } = {
+const statusLabels: StatusLabels = {
   0: "Not scheduled",
   1: "Scheduled",
   2: "Daily Progress",
@@ -47,9 +55,7 @@ const statusLabels: { [key: number]: string } = {
 function TaskTracker() {
   const [newTask, setNewTask] = useState<string>("");
   const [taskStatus, setTaskStatus] = useState<number>(0);
-  const [taskType, setTaskType] = useState<"daily" | "weekly" | "yearly">(
-    "daily"
-  );
+  const [taskType, setTaskType] = useState<TaskType>("daily");
   const [taskDateTime, setTaskDateTime] = useState<string>("");
   const [showDateField, setShowDateField] = useState<boolean>(false);
 
@@ -61,29 +67,40 @@ function TaskTracker() {
   // Function to add new task entry
   const handleAddTask = () => {
     if (newTask) {
-      let entry;
-
       if (taskType === "daily") {
-        entry = [taskDateTime || new Date().toISOString(), newTask];
-        taskData.daily.push(entry as [string, string]);
+        const entry: [string, string] = [
+          taskDateTime || new Date().toISOString(),
+          newTask,
+        ];
+        taskData.daily.push(entry);
       } else {
         if (taskStatus === 1 && taskDateTime) {
           // For scheduled tasks with date
-          entry = [taskStatus, taskDateTime, newTask];
+          const entry: [number, string, string] = [
+            taskStatus,
+            taskDateTime,
+            newTask,
+          ];
+
+          if (taskType === "weekly") {
+            taskData.weekly.push(entry);
+          } else if (taskType === "yearly") {
+            taskData.yearly.push(entry);
+          }
         } else {
           // For other status types
-          entry = [taskStatus, newTask];
-        }
+          const entry: [number, string] = [taskStatus, newTask];
 
-        if (taskType === "weekly") {
-          taskData.weekly.push(entry as [number | string, string]);
-        } else if (taskType === "yearly") {
-          taskData.yearly.push(entry as [number | string, string]);
+          if (taskType === "weekly") {
+            taskData.weekly.push(entry);
+          } else if (taskType === "yearly") {
+            taskData.yearly.push(entry);
+          }
         }
       }
 
       // Log the task data to console
-      console.log("Task added:", entry);
+      console.log("Task added");
       console.log("Current task data:", JSON.stringify(taskData, null, 2));
       setToLocalStorage("tasks", taskData);
 
@@ -96,7 +113,7 @@ function TaskTracker() {
   };
 
   // Helper function to get status badge color
-  const getStatusColor = (status: number) => {
+  const getStatusColor = (status: number): string => {
     switch (status) {
       case 0:
         return "bg-zinc-700";
@@ -116,43 +133,46 @@ function TaskTracker() {
   };
 
   // Helper function to render task rows
-  const renderTaskRow = (task: any[], index: number, type: string) => {
+  const renderTaskRow = (
+    task: [string, string] | [number, string] | [number, string, string],
+    index: number,
+    type: TaskType
+  ) => {
     if (task.length === 3) {
       // This is a scheduled task with date
+      const [status, date, description] = task as [number, string, string];
       return (
         <TableRow key={`${type}-${index}`}>
           <TableCell>
             <span
-              className={`px-2 py-1 rounded text-sm ${getStatusColor(
-                task[0] as number
-              )}`}
+              className={`px-2 py-1 rounded text-sm ${getStatusColor(status)}`}
             >
-              {statusLabels[task[0] as number]} ({task[1]})
+              {statusLabels[status]} ({date})
             </span>
           </TableCell>
-          <TableCell>{task[2]}</TableCell>
+          <TableCell>{description}</TableCell>
         </TableRow>
       );
     } else if (type === "daily") {
+      const [date, description] = task as [string, string];
       return (
         <TableRow key={`${type}-${index}`}>
-          <TableCell className="font-medium">{task[0]}</TableCell>
-          <TableCell>{task[1]}</TableCell>
+          <TableCell className="font-medium">{date}</TableCell>
+          <TableCell>{description}</TableCell>
         </TableRow>
       );
     } else {
+      const [status, description] = task as [number, string];
       return (
         <TableRow key={`${type}-${index}`}>
           <TableCell>
             <span
-              className={`px-2 py-1 rounded text-sm ${getStatusColor(
-                task[0] as number
-              )}`}
+              className={`px-2 py-1 rounded text-sm ${getStatusColor(status)}`}
             >
-              {statusLabels[task[0] as number]}
+              {statusLabels[status]}
             </span>
           </TableCell>
-          <TableCell>{task[1]}</TableCell>
+          <TableCell>{description}</TableCell>
         </TableRow>
       );
     }
@@ -237,9 +257,7 @@ function TaskTracker() {
         <div className="flex flex-wrap gap-2 items-center">
           <Select
             value={taskType}
-            onValueChange={(value) =>
-              setTaskType(value as "daily" | "weekly" | "yearly")
-            }
+            onValueChange={(value) => setTaskType(value as TaskType)}
           >
             <SelectTrigger className="w-32 bg-zinc-800 border-zinc-700">
               <SelectValue placeholder="Task Type" />
@@ -283,7 +301,7 @@ function TaskTracker() {
           {showDateField &&
             (taskType === "weekly" || taskType === "yearly") && (
               <Input
-                type={taskType === "weekly" ? "date" : "date"}
+                type="date"
                 value={taskDateTime}
                 onChange={(e) => setTaskDateTime(e.target.value)}
                 className="bg-zinc-800 border-zinc-700 w-46"

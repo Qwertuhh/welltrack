@@ -71,7 +71,7 @@ function DiaryPage() {
             I&apos;m done with my diary
           </Button>
           <p className="text-center text-sm text-muted-foreground">
-            First done with your finances and tasks
+            First done with your <span className="underline text-bold">finances</span> and <span className="underline text-bold">tasks</span>
           </p>
           <div className="w-full h-full flex flex-col gap-1.5">
             <Label htmlFor="message" className="mx-auto text-2xl font-sans">
