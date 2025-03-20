@@ -81,7 +81,7 @@ function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Edit />
-              <Link href="/">Edit</Link>
+              <Link href="/profile">Edit</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

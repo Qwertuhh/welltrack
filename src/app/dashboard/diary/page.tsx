@@ -22,7 +22,11 @@ function DiaryPage() {
     axios
       .post("/api/sentimentAndEmotion", {
         data: textareaElement.value,
-        finances: localStorage.getItem("finances")! || {data: [], weekly: [], yearly: []},
+        finances: localStorage.getItem("finances")! || {
+          data: [],
+          weekly: [],
+          yearly: [],
+        },
       })
       .then((response) => {
         appendToLocalStorage(
@@ -40,15 +44,15 @@ function DiaryPage() {
         );
         if (response.data.response.emotion_sentiment.sentiment == 0) {
           toast("You are having a bad day!", { icon: "🥺" });
-          const routePromise =setInterval(() => {
+          setTimeout(() => {
             router.push("/dashboard/assistant");
           }, 2000);
-          clearInterval(routePromise);
         }
         toast.success("Diary saved successfully!");
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        toast.error("Something went wrong!");
       });
   };
   return (
@@ -85,7 +89,12 @@ function DiaryPage() {
       <div className="w-[90%] mx-auto  h-full">
         <FinanceMarker />
       </div>
-        <Link href="/dashboard/tasks" className="text-center text-accent-foreground bg-stone-800 underline hover:bg-zinc-600 py-2 px-4 rounded mx-auto">Fill your Tasks</Link>
+      <Link
+        href="/dashboard/tasks"
+        className="text-center text-accent-foreground bg-stone-800 underline hover:bg-zinc-600 py-2 px-4 rounded mx-auto"
+      >
+        Fill your Tasks
+      </Link>
     </>
   );
 }

@@ -27,53 +27,54 @@ import {
 import { usePathname } from "next/navigation";
 import ThemeToggle from "../theme/theme-toggle";
 import NavUser from "./nav-user";
+import { getFromLocalStorage } from "@/lib/store";
 const iconOptions = "h-8 w-8 mr-2";
 const data = {
   navMain: [
     {
       title: "Home",
       url: "/",
-      icon: <Home className="h-10 w-10"/>,
+      icon: <Home className="h-10 w-10" />,
       items: [
         {
           title: "Diary",
           url: "/dashboard/diary",
           isActive: false,
-          icon: <NotebookPen className={iconOptions}/>,
+          icon: <NotebookPen className={iconOptions} />,
         },
         {
           title: "Tasks",
           url: "/dashboard/tasks",
           isActive: false,
-          icon: <Calendar1Icon className={iconOptions}/>,
+          icon: <Calendar1Icon className={iconOptions} />,
         },
         {
           title: "Stats",
           url: "/dashboard/stats",
           isActive: false,
-          icon: <ChartBarBig className={iconOptions}/>,
+          icon: <ChartBarBig className={iconOptions} />,
         },
         {
           title: "Streaks",
           url: "/dashboard/streaks",
           isActive: false,
-          icon: <Flame className={iconOptions}/>,
+          icon: <Flame className={iconOptions} />,
         },
         {
           title: "Assistant",
           url: "/dashboard/assistant",
           isActive: false,
-          icon: <BotMessageSquare className={iconOptions}/>,
+          icon: <BotMessageSquare className={iconOptions} />,
         },
       ],
     },
   ],
 };
-const userDetails = {
-  name: "John Doe",
-  email: "xv2yI@example.com",
-  avatar: "https://github.com/shadcn.png",
-};
+
+
+const userDetails: { name: string; email: string; avatar: string } =
+  getFromLocalStorage("user")!;
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   console.log("Route", pathname);
@@ -142,7 +143,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <ThemeToggle />
-      <NavUser user={userDetails} />
+      <NavUser user={{...userDetails, name: userDetails.name || "User", email: userDetails.email || "UserEmail@", avatar: userDetails.avatar || "https://github.com/shadcn.png"}} />
     </Sidebar>
   );
 }

@@ -7,15 +7,15 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 async function POST(req: NextRequest) {
   try {
-    const { userData } = await req.json();
-
+    const { userData, issue } = await req.json();
     const prompt = `
-      your are a counseller counsell this child 
-      in intractive mannger ask question and give advice in very conicent way and in concise manner
+      You are a counselor. Counsel this child in an interactive manner - ask questions and give advice in a very concise and professional way. 
+      First, listen to the issue from the user. The issue is 
+      Don't repeat words that will make the user angry. 
+      Use all the data given to you in a nice and concise format.
+      
       His/Her data: '${userData}'
-
-      Use all data that i given to you
-      In Nice concise Formate
+      User Issue: ${issue}
       `;
     const result = await model.generateContent(prompt);
 

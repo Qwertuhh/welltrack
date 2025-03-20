@@ -129,3 +129,6 @@
     @apply bg-background text-foreground;
   }
 }
+ .text-stroke {
+    -webkit-text-stroke: 1px black;
+  }

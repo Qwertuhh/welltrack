@@ -1,4 +1,4 @@
-import { DashboardButton } from "@/components/dashboard-button";
+import DashboardButton  from "@/components/home/dashboard-button";
 import Header from "@/components/header";
 function Page() {
   return (

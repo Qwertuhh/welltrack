@@ -1,3 +1,4 @@
+'use client';
 import Markdown from "react-markdown";
 
 function Chat({ chat }: { chat: [number, string] }) {

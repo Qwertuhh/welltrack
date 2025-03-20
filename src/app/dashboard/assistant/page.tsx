@@ -7,7 +7,7 @@ import { getFromLocalStorage } from "@/lib/store";
 import axios from "axios";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {  Volume2, VolumeX} from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 
 function AssistantPage() {
   const [chatData, setChatData] = useState([
@@ -28,15 +28,22 @@ function AssistantPage() {
     setChatData([...updatedChatData, [2, ""]]);
     axios
       .post("/api/assistant", {
-        userData: `UserData: ${userDataLocal},\n Issue Form User: ${message.value}`,
+        userData: userDataLocal,
+        issue: message.value,
       })
       .then((response) => {
         const newChatData = [...updatedChatData, [0, response.data.response]];
         setChatData(newChatData.slice(0, -1));
         setChatData(newChatData);
-        if(speak)speechSynthesis.speak(
-          new SpeechSynthesisUtterance(response.data.response)
-        ); // To speak
+        if (speak) {
+          speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(
+            response.data.response
+          );
+          utterance.voice = speechSynthesis.getVoices()[87];
+          utterance.rate = 1.25;
+          speechSynthesis.speak(utterance);
+        } // To speak
 
         //* Clearing the input
         message.value = "";
@@ -52,7 +59,10 @@ function AssistantPage() {
       <div className="flex items-center gap-2 border rounded-md p-2 absolute top-2 right-2">
         <div
           className="flex items-center gap-2 cursor-pointer"
-          onClick={() => setSpeak(!speak)}
+          onClick={() => {
+            setSpeak(!speak);
+            if (speak) speechSynthesis.cancel();
+          }}
         >
           {speak ? <Volume2 /> : <VolumeX />}
         </div>

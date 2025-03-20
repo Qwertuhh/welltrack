@@ -1,8 +1,9 @@
+'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { NotebookPen } from "lucide-react";
 
-export function DashboardButton() {
+function DashboardButton() {
   return (
     <Button asChild>
       <Link href="/dashboard/diary" className="flex items-center gap-2">
@@ -12,3 +13,5 @@ export function DashboardButton() {
     </Button>
   );
 }
+
+export default DashboardButton;
