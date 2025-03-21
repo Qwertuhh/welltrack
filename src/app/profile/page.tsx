@@ -16,13 +16,7 @@ import { useRouter } from "next/navigation";
 import DashboardButton from "@/components/home/dashboard-button";
 import { setToLocalStorage } from "@/lib/store";
 
-// Properly define component props
-interface ProfilePageProps {
-  className?: string;
-  // Add any other props your component needs
-}
-
-export default function ProfilePage({ className }: ProfilePageProps) {
+export default function ProfilePage() {
   const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -56,8 +50,7 @@ export default function ProfilePage({ className }: ProfilePageProps) {
       <Toaster />
       <div
         className={cn(
-          "flex flex-col gap-6 sm:w-1/2 w-[80%] max-w-[90%] min-w-1/2 h-min absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-          className
+          "flex flex-col gap-6 sm:w-1/2 w-[80%] max-w-[90%] min-w-1/2 h-min absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         )}
       >
         <Card>
